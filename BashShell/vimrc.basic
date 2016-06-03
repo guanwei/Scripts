@@ -1,0 +1,147 @@
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/vundle
+call vundle#begin()
+
+" let Vundle manage Vundle, required
+Plugin 'gmarik/vundle'
+
+" The following are your Plugins
+Plugin 'mhinz/vim-startify' "The fancy start screen
+Plugin 'spf13/vim-colors' " Collection of color schemes
+Plugin 'luochen1990/rainbow' " rainbow parentheses improved
+Plugin 'Yggdroot/indentLine' " display the indention levels with thin vertical lines
+Plugin 'IndexedSearch' "shows 'Nth match out of M' at every search
+Plugin 'ctrlpvim/ctrlp.vim' " Fuzzy file, buffer, mru, tag, etc finder
+Plugin 'tacahiroy/ctrlp-funky' " A simple function navigator for ctrlp.vim
+Plugin 'matchit.zip' " extended % matching for HTML, LaTeX, and many other languages
+Plugin 'tpope/vim-surround' " quoting/parenthesizing made simple
+Plugin 'tpope/vim-repeat' " enable repeating supported plugin maps with '.'
+Plugin 'terryma/vim-multiple-cursors' " True Sublime Text style multiple selections
+Plugin 'easymotion/vim-easymotion' " motions on speed
+Plugin 'mhinz/vim-signify' " Show a diff via Vim sign column
+Plugin 'vim-airline/vim-airline' " status/tabline
+Plugin 'vim-airline/vim-airline-themes' " A collection of themes for vim-airline
+Plugin 'jiangmiao/auto-pairs' " insert or delete brackets, parens, quotes in pair
+Plugin 'scrooloose/nerdtree' " A tree explorer plugin
+Plugin 'jistr/vim-nerdtree-tabs' " make NERDTree and tabs together
+Plugin 'majutsushi/tagbar' " displays tags in a window
+Plugin 'mbbill/undotree' " The ultimate undo history visualizer
+Plugin 'scrooloose/syntastic' " Syntax checking hacks for vim
+Plugin 'scrooloose/nerdcommenter' " intensely orgasmic commenting
+Plugin 'bronson/vim-trailing-whitespace' "Highlights trailing whitespace in red
+Plugin 'thinca/vim-quickrun' "Run commands quickly
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+syntax on                    " required
+
+set history=1000            " Store a ton of history (default is 20)
+set hidden                  " Allow buffer switching without saving
+
+if &term == 'xterm' || &term == 'screen'
+    set t_Co=256            " Enable 256 colors
+endif
+
+if filereadable(expand("~/.vim/bundle/vim-colors/colors/molokai.vim"))
+    color molokai            " Load a colorscheme
+endif
+
+scriptencoding utf-8
+set cursorline              " Highlight current line
+set ruler                   " Show the ruler
+set laststatus=2
+
+set backspace=indent,eol,start  " Backspace for dummies
+set number                      " Line numbers on
+set incsearch                   " Find as you type search
+set hlsearch                    " Highlight search terms
+set ignorecase                  " Case insensitive search
+set smartcase                   " Case sensitive when uc present
+set wildmenu                    " Show list instead of just completing
+set scrolloff=3                 " Minimum lines to keep above and below cursor
+
+set nowrap                      " Do not wrap long lines
+set autoindent                  " Indent at the same level of the previous line
+set shiftwidth=4                " Use indents of 4 spaces
+set expandtab                   " Tabs are spaces, not tabs
+set tabstop=4                   " An indentation every four columns
+set softtabstop=4               " Let backspace delete indent
+
+autocmd FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=2
+
+" Key (re)Mappings
+let mapleader = ','
+
+" tab navigation mappings
+nnoremap <leader>tc :tabc<return>
+nnoremap <leader>tn :tabn<return>
+nnoremap <leader>tp :tabp<return>
+nnoremap <leader>te :tabe<space>
+
+" Wrapped lines goes down/up to next row, rather than next line in file.
+noremap j gj
+noremap k gk
+
+" Change Working Directory to that of the current file
+cmap cwd lcd %:p:h
+
+" Visual shifting (does not exit Visual mode)
+vnoremap < <gv
+vnoremap > >gv
+
+" Allow using the repeat operator with a visual selection (!)
+vnoremap . :normal .<CR>
+
+" For when you forget to sudo.. Really Write the file.
+cmap w!! w !sudo tee % >/dev/null
+
+noremap <leader>fu :CtrlPFunky<Cr>
+map <leader><space> :FixWhitespace<CR>
+noremap <leader>/ :set hlsearch! hlsearch?<CR>
+map <silent> <F2> <plug>NERDTreeTabsToggle<CR>
+noremap <silent> <F3> :TagbarToggle<CR>
+noremap <silent> <F4> :UndotreeToggle<CR>
+noremap <silent> <F5> :QuickRun<CR>
+set pastetoggle=<F12>   " pastetoggle (sane indentation on pastes)
+
+" Plugin Settings
+if isdirectory(expand("~/.vim/bundle/nerdtree/"))
+    let NERDTreeIgnore=['\.py[cd]$', '\~$', '\.swo$', '\.swp$', '^\.git$', '^\.hg$', '^\.svn$', '\.bzr$']
+    let NERDTreeShowBookmarks=1
+    let NERDTreeQuitOnOpen=1
+endif
+
+if isdirectory(expand("~/.vim/bundle/rainbow/"))
+    let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
+endif
+
+if isdirectory(expand("~/.vim/bundle/undotree/"))
+    let g:undotree_SetFocusWhenToggle=1
+endif
+
+if isdirectory(expand("~/.vim/bundle/ctrlp.vim/"))
+    let g:ctrlp_custom_ignore = {
+        \ 'dir':  '\.git$\|\.hg$\|\.svn$',
+        \ 'file': '\.exe$\|\.so$\|\.dll$\|\.pyc$' }
+    let s:ctrlp_fallback = 'ag %s --nocolor -l -g ""'
+
+    if isdirectory(expand("~/.vim/bundle/ctrlp-funky/"))
+        let g:ctrlp_extensions = ['funky']
+    endif
+endif
+
+if isdirectory(expand("~/.vim/bundle/vim-airline-themes/"))
+    let g:airline_theme = 'bubblegum'
+endif
+
+if isdirectory(expand("~/.vim/bundle/nerdcommenter/"))
+    let g:NERDShutUp=1
+endif
+
+if isdirectory(expand("~/.vim/bundle/matchit.zip/"))
+    let b:match_ignorecase = 1
+endif
