@@ -1,2 +1,2 @@
 # scripts
-edward's scripts
+shell scripts
