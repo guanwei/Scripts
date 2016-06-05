@@ -31,7 +31,7 @@ if [ -n "$(uname -r | grep 'amzn')" ]; then
     service tomcat8 start
     chkconfig nginx on
     service nginx start
-    
+
     echo "=============================="
     echo "jenkins administrator password"
     echo "=============================="
