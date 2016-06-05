@@ -10,4 +10,10 @@ yum install -y libyaml-devel libcurl-devel --enablerepo rhui-REGION-rhel-server-
 rvm install 2.3
 rvm use 2.3 --default
 gem install bundler passenger --no-ri --no-rdoc
+
+dd if=/dev/zero of=/swapfile bs=1M count=1024
+chmod 0644 /swapfile
+mkswap /swapfile
+swapon /swapfile
+echo '/swapfile none swap defaults 0 0' >> /etc/fstab
 passenger-install-nginx-module
