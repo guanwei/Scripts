@@ -33,6 +33,7 @@ Plugin 'scrooloose/syntastic' " Syntax checking hacks for vim
 Plugin 'scrooloose/nerdcommenter' " intensely orgasmic commenting
 Plugin 'bronson/vim-trailing-whitespace' "Highlights trailing whitespace in red
 Plugin 'thinca/vim-quickrun' "Run commands quickly
+Plugin 'edkolev/tmuxline.vim' "Simple tmux statusline
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required

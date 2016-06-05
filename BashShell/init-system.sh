@@ -27,16 +27,20 @@ fi
 
 TIME_ZONE="Asia/Shanghai"
 
+# set timezone
 echo_title "Setting timezone [$TIME_ZONE]..."
 rm -rf /etc/localtime
 ln -sf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime
 echo_success "Timezone has been set to [$TIME_ZONE]"
 
-#echo_title "Disabling selinux..."
-#if [ -e /etc/selinux/config ]; then
-#    sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config
-#fi
+# disabe selinux
+echo_title "Disabling selinux..."
+if [ -e /etc/selinux/config ]; then
+    sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config
+fi
+echo_success "selinux has been disabled"
 
+# install epel repo
 if [ -z "$(rpm -qa | grep epel-release)" ]; then
     echo_title "Installing EPEL repo..."
     SYSTEM=$(uname -r)
@@ -50,3 +54,6 @@ if [ -z "$(rpm -qa | grep epel-release)" ]; then
     esac
     echo_success "EPEL repo has been installed"
 fi
+
+# update system
+yum update -y
