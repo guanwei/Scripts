@@ -20,3 +20,6 @@ passenger-install-nginx-module
 
 useradd -M -s /bin/nologin www
 sed -i -e 's|#user .*|user   www;|g' -e 's|#pid .*|pid   /var/run/nginx.pid;|g' /opt/nginx/conf/nginx.conf
+
+chkconfig nginx on
+service nginx start
