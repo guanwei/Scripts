@@ -17,3 +17,6 @@ mkswap /swapfile
 swapon /swapfile
 echo '/swapfile none swap defaults 0 0' >> /etc/fstab
 passenger-install-nginx-module
+
+useradd -M -s /bin/nologin www
+sed -i -e 's|#user .*|user   www;|g' -e 's|#pid .*|pid   /var/run/nginx.pid;|g' /opt/nginx/conf/nginx.conf

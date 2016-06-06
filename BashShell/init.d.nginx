@@ -1,108 +1,140 @@
 #!/bin/sh
 #
-# nginx - this script starts and stops the nginx daemon
+# nginx        Startup script for nginx
 #
-# chkconfig:   - 85 15
-# description:  NGINX is an HTTP(S) server, HTTP(S) reverse \
-#               proxy and IMAP/POP3 proxy server
+# chkconfig: - 85 15
 # processname: nginx
-# config:      /etc/nginx/nginx.conf
-# config:      /etc/sysconfig/nginx
-# pidfile:     /var/run/nginx.pid
+# config: /opt/nginx/conf/nginx.conf
+# pidfile: /var/run/nginx.pid
+# description: nginx is an HTTP and reverse proxy server
+#
+### BEGIN INIT INFO
+# Provides: nginx
+# Required-Start: $local_fs $remote_fs $network
+# Required-Stop: $local_fs $remote_fs $network
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: start and stop nginx
+### END INIT INFO
 
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-# Source networking configuration.
-. /etc/sysconfig/network
-
-# Check that networking is up.
-[ "$NETWORKING" = "no" ] && exit 0
-
-nginx="/usr/sbin/nginx"
-prog=$(basename $nginx)
-
-NGINX_CONF_FILE="/opt/nginx/conf/nginx.conf"
-
-lockfile=/var/lock/subsys/nginx
+nginx=${NGINX-/opt/nginx/sbin/nginx}
+prog=`/bin/basename $nginx`
+conffile=${CONFFILE-/opt/nginx/conf/nginx.conf}
+lockfile=${LOCKFILE-/var/lock/subsys/nginx}
+pidfile=${PIDFILE-/var/run/nginx.pid}
+SLEEPMSEC=${SLEEPMSEC-200000}
+UPGRADEWAITLOOPS=${UPGRADEWAITLOOPS-5}
+RETVAL=0
 
 start() {
-    [ -x $nginx ] || exit 5
-    [ -f $NGINX_CONF_FILE ] || exit 6
     echo -n $"Starting $prog: "
-    daemon $nginx -c $NGINX_CONF_FILE
-    retval=$?
+
+    daemon --pidfile=${pidfile} ${nginx} -c ${conffile}
+    RETVAL=$?
     echo
-    [ $retval -eq 0 ] && touch $lockfile
-    return $retval
+    [ $RETVAL = 0 ] && touch ${lockfile}
+    return $RETVAL
 }
 
 stop() {
     echo -n $"Stopping $prog: "
-    killproc $prog -QUIT
-    retval=$?
+    killproc -p ${pidfile} ${prog}
+    RETVAL=$?
     echo
-    [ $retval -eq 0 ] && rm -f $lockfile
-    return $retval
-}
-
-restart() {
-    configtest || return $?
-    stop
-    sleep 1
-    start
+    [ $RETVAL = 0 ] && rm -f ${lockfile} ${pidfile}
 }
 
 reload() {
-    configtest || return $?
     echo -n $"Reloading $prog: "
-    killproc $nginx -HUP
+    killproc -p ${pidfile} ${prog} -HUP
     RETVAL=$?
     echo
 }
 
-force_reload() {
-    restart
+upgrade() {
+    oldbinpidfile=${pidfile}.oldbin
+
+    configtest -q || return
+    echo -n $"Starting new master $prog: "
+    killproc -p ${pidfile} ${prog} -USR2
+    echo
+
+    for i in `/usr/bin/seq $UPGRADEWAITLOOPS`; do
+        /bin/usleep $SLEEPMSEC
+        if [ -f ${oldbinpidfile} -a -f ${pidfile} ]; then
+            echo -n $"Graceful shutdown of old $prog: "
+            killproc -p ${oldbinpidfile} ${prog} -QUIT
+            RETVAL=$?
+            echo
+            return
+        fi
+    done
+
+    echo $"Upgrade failed!"
+    RETVAL=1
 }
 
 configtest() {
-  $nginx -t -c $NGINX_CONF_FILE
+    if [ "$#" -ne 0 ] ; then
+        case "$1" in
+            -q)
+                FLAG=$1
+                ;;
+            *)
+                ;;
+        esac
+        shift
+    fi
+    ${nginx} -t -c ${conffile} $FLAG
+    RETVAL=$?
+    return $RETVAL
 }
 
 rh_status() {
-    status $prog
+    status -p ${pidfile} -b ${nginx} ${nginx}
 }
 
-rh_status_q() {
-    rh_status >/dev/null 2>&1
-}
-
+# See how we were called.
 case "$1" in
     start)
-        rh_status_q && exit 0
-        $1
+        rh_status >/dev/null 2>&1 && exit 0
+        start
         ;;
     stop)
-        rh_status_q || exit 0
-        $1
-        ;;
-    restart|configtest)
-        $1
-        ;;
-    reload)
-        rh_status_q || exit 7
-        $1
-        ;;
-    force-reload)
-        force_reload
+        stop
         ;;
     status)
+    status)
         rh_status
+        RETVAL=$?
+        ;;
+    restart)
+        configtest -q || exit $RETVAL
+        stop
+        start
+        ;;
+    upgrade)
+        rh_status >/dev/null 2>&1 || exit 0
+        upgrade
         ;;
     condrestart|try-restart)
-        rh_status_q || exit 0
-            ;;
+        if rh_status >/dev/null 2>&1; then
+            stop
+            start
+        fi
+        ;;
+    force-reload|reload)
+        reload
+        ;;
+    configtest)
+        configtest
+        ;;
     *)
-        echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}"
-        exit 2
+        echo $"Usage: $prog {start|stop|restart|condrestart|try-restart|force-reload|upgrade|reload|status|help|configtest}"
+        RETVAL=2
 esac
+
+exit $RETVAL
