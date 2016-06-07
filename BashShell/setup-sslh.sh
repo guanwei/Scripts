@@ -65,4 +65,8 @@ echo_success "sslh has been set up"
 
 # enable & start sslh service
 chkconfig sslh on
-service sslh start
+if [ -z "$(service sslh status | grep running)" ]; then
+    service sslh start
+else
+    service sslh restart
+fi
