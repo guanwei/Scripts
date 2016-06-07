@@ -1,0 +1,80 @@
+#!/bin/bash
+#
+# sslh         Startup script for the SSL/SSH multiplexer
+#
+# chkconfig: - 13 87
+# description: Sslh accepts connections on specified ports, and forwards
+#              them further based on tests performed on the first data
+#              packet sent by the remote client.
+# processname: sslh
+# config: /etc/sslh.cfg
+# config: /etc/sysconfig/sslh
+# pidfile: /var/run/sslh/sslh.pid
+#
+# Authors:
+# Andre Krajnik akrajnik@gmail.com - 2010-03-20
+# Julien Thomas julthomas@free.fr - 2013-08-25
+# James Hogarth james.hogarth@gmail.com - 2015-04-18
+
+
+# Source function library.
+. /etc/init.d/functions
+
+if [ -f /etc/sysconfig/sslh ]; then
+        . /etc/sysconfig/sslh
+fi
+
+PROGNAME=sslh
+SSLH=${SSLH:-/usr/sbin/sslh}
+SSLH_LANG=${SSLH_LANG:-C}
+PIDFILE=${PIDFILE:-/var/run/sslh/sslh.pid}
+LOCKFILE=${LOCKFILE:-/var/lock/subsys/sslh}
+STOP_TIMEOUT=${STOP_TIMEOUT:-10}
+RETVAL=0
+
+start() {
+    echo -n "Starting $PROGNAME: "
+    LANG=$SSLH_LANG "$SSLH" -P "$PIDFILE" \
+                           ${SSLH_USER:+-u "${SSLH_USER}"} \
+                           ${DAEMON_OPTS}
+    RETVAL=$?
+    if [ $RETVAL = 0 ]; then
+        echo -e "                                            [\e[32m  OK  \e[0m]"
+        touch "$LOCKFILE"
+    else
+        echo -e "                                            [\e[31mFAILED\e[0m]"
+    fi
+    return $RETVAL
+}
+
+stop() {
+    echo -n "Stopping $PROGNAME: "
+    killproc -p "$PIDFILE" -d "$STOP_TIMEOUT" "$SSLH"
+    RETVAL=$?
+    echo
+    [ $RETVAL = 0 ] && rm -f "$LOCKFILE" "$PIDFILE"
+}
+
+# See how we were called.
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status -p "$PIDFILE" "$SSLH"
+        RETVAL=$?
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage: $PROGNAME {start|stop|status|restart}"
+        RETVAL=2
+        ;;
+esac
+
+exit $RETVAL

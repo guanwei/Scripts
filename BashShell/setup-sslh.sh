@@ -6,17 +6,17 @@ set -e
 # define functions
 echo_title()
 {
-    echo -e "\e[0;34m$1\e[0m"
+    echo -e "\e[34m$1\e[0m"
 }
 
 echo_success()
 {
-    echo -e "\e[0;32m[✔]\e[0m $1"
+    echo -e "\e[32m[✔]\e[0m $1"
 }
 
 echo_error()
 {
-    echo -e "\e[0;31m[✘]\e[0m $1"
+    echo -e "\e[31m[✘]\e[0m $1"
 }
 
 # check if user is root
@@ -43,12 +43,21 @@ fi
 # install sslh
 if [ -z "$(rpm -qa | grep sslh)" ]; then
     echo_title "Installing sslh..."
-    yum -y install sslh
+    yum install -y sslh --enablerepo=epel >/dev/null
     echo_success "sslh has been installed"
 fi
 # set up sslh
 echo_title "Setting up sslh..."
-sed -i 's/{ host: "[^"]*";/{ host: "0.0.0.0";/' /etc/sslh.cfg
+case "$SYSTEM" in
+    *el6*)
+        sed -i 's|[ #]*SSLH_USER=.*|SSLH_USER=sslh|g' /etc/sysconfig/sslh
+        sed 's|[ #]*DAEMON_OPTS=.*|DAEMON_OPTS="-p 0.0.0.0:443 --ssh 127.0.0.1:22 --openvpn 127.0.0.1:1194 --ssl 127.0.0.1:443 --anyprot 127.0.0.1:443"|g' /etc/sysconfig/sslh
+        curl -sSL https://raw.githubusercontent.com/guanwei/Scripts/master/BashShell/init.d.sslh -o /etc/init.d/sslh
+        ;;
+    *el7*)
+        sed -i 's/{ host: "[^"]*";/{ host: "0.0.0.0";/' /etc/sslh.cfg
+        ;;
+esac
 chkconfig sslh on   # enable sslh service
 service sslh start  # start sslh service
 echo_success "sslh has been set up"
