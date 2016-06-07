@@ -56,6 +56,8 @@ case "$SYSTEM" in
     *el7*)
         sed -i 's/{ host: "[^"]*";/{ host: "0.0.0.0";/' /etc/sslh.cfg
         ;;
+    *)
+        echo "Unknown system: $SYSTEM"; exit 1;;
 esac
 echo_success "sslh has been set up"
 
