@@ -3,6 +3,22 @@
 set -e
 [ -n "$DEBUG" ] && set -x
 
+# define functions
+echo_title()
+{
+    echo -e "\e[0;34m$1\e[0m"
+}
+
+echo_success()
+{
+    echo -e "\e[0;32m[✔]\e[0m $1"
+}
+
+echo_error()
+{
+    echo -e "\e[0;31m[✘]\e[0m $1"
+}
+
 # install pyenv
 curl -sL https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
 
