@@ -30,8 +30,6 @@ SYSTEM=$(uname -r)
 # install epel repo
 if [ -z "$(rpm -qa | grep epel-release)" ]; then
     echo_title "Installing EPEL repo..."
-    case "$SYSTEM" in
-        *el6*|*amzn1*)
             rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm;;
         *el7*)
             rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm;;
@@ -50,16 +48,17 @@ fi
 # set up sslh
 echo_title "Setting up sslh..."
 case "$SYSTEM" in
-    *(el6|amzn1)*)
-        echo "here"
+    *el6*|*amzn1*)
         sed -i 's|[ #]*SSLH_USER=.*|SSLH_USER=sslh|g' /etc/sysconfig/sslh
-        sed 's|[ #]*DAEMON_OPTS=.*|DAEMON_OPTS="-p 0.0.0.0:443 --ssh 127.0.0.1:22 --openvpn 127.0.0.1:1194 --ssl 127.0.0.1:443 --anyprot 127.0.0.1:443"|g' /etc/sysconfig/sslh
+        sed -i 's|[ #]*DAEMON_OPTS=.*|DAEMON_OPTS="-p 0.0.0.0:443 --ssh 127.0.0.1:22 --openvpn 127.0.0.1:1194 --ssl 127.0.0.1:443 --anyprot 127.0.0.1:443"|g' /etc/sysconfig/sslh
         curl -sSL https://raw.githubusercontent.com/guanwei/Scripts/master/BashShell/init.d.sslh -o /etc/init.d/sslh
         ;;
     *el7*)
         sed -i 's/{ host: "[^"]*";/{ host: "0.0.0.0";/' /etc/sslh.cfg
         ;;
 esac
-chkconfig sslh on   # enable sslh service
-service sslh start  # start sslh service
 echo_success "sslh has been set up"
+
+# enable & start sslh service
+chkconfig sslh on
+service sslh start
