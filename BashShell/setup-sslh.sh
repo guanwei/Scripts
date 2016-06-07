@@ -30,6 +30,8 @@ SYSTEM=$(uname -r)
 # install epel repo
 if [ -z "$(rpm -qa | grep epel-release)" ]; then
     echo_title "Installing EPEL repo..."
+    case "$SYSTEM" in
+        *el6*|*amzn1*)
             rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm;;
         *el7*)
             rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm;;
