@@ -25,10 +25,11 @@ if [ $(id -u) != "0" ] ; then
     exit 1
 fi
 
+SYSTEM=$(uname -r)
+
 # install epel repo
 if [ -z "$(rpm -qa | grep epel-release)" ]; then
     echo_title "Installing EPEL repo..."
-    SYSTEM=$(uname -r)
     case "$SYSTEM" in
         *el6*)
             rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm;;
