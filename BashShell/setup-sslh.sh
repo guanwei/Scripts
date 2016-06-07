@@ -50,7 +50,7 @@ fi
 # set up sslh
 echo_title "Setting up sslh..."
 case "$SYSTEM" in
-    el6|amzn1)
+    el6|*amzn1*)
         sed -i 's|[ #]*SSLH_USER=.*|SSLH_USER=sslh|g' /etc/sysconfig/sslh
         sed 's|[ #]*DAEMON_OPTS=.*|DAEMON_OPTS="-p 0.0.0.0:443 --ssh 127.0.0.1:22 --openvpn 127.0.0.1:1194 --ssl 127.0.0.1:443 --anyprot 127.0.0.1:443"|g' /etc/sysconfig/sslh
         curl -sSL https://raw.githubusercontent.com/guanwei/Scripts/master/BashShell/init.d.sslh -o /etc/init.d/sslh
