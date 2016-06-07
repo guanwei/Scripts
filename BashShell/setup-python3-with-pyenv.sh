@@ -20,7 +20,7 @@ echo_error()
 }
 
 # install pyenv
-curl -sL https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
+curl -sSL https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
 
 if [ -z "$(grep '# pyenv' ~/.bash_profile)" ] ; then
     cat >> ~/.bash_profile << EOF
@@ -37,7 +37,7 @@ fi
 pyenv update
 
 # install python3
-sudo yum -y install zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel
+sudo yum install -y zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel >/dev/null
 pyenv install -v 3.5.1
 pyenv rehash
 pyenv global 3.5.1

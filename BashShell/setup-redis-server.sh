@@ -3,19 +3,35 @@
 set -e
 [ -n "$DEBUG" ] && set -x
 
+# define functions
+echo_title()
+{
+    echo -e "\e[0;34m$1\e[0m"
+}
+
+echo_success()
+{
+    echo -e "\e[0;32m[✔]\e[0m $1"
+}
+
+echo_error()
+{
+    echo -e "\e[0;31m[✘]\e[0m $1"
+}
+
 # check if user is root
 if [ $(id -u) != "0" ] ; then
-    echo -e "\033[31mError: You must run this script as root.\033[0m"
+    echo_error "Error: You must run this script as root."
     exit 1
 fi
 
 PATH=/usr/local/bin:$PATH
 
-SRC_PATH="/usr/local/src"
-cd "$SRC_PATH"
+# change current path
+cd /usr/local/src
 
 # install gcc
-yum -y install gcc
+yum install -y gcc >/dev/null
 
 # download redis
 if [ ! -f redis-stable.tar.gz ]; then

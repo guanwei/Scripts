@@ -47,7 +47,7 @@ baseurl=http://nginx.org/packages/rhel/\$releasever/\$basearch/
 gpgcheck=0
 enabled=1
 EOF
-    yum -y install nginx tomcat
+    yum install -y nginx tomcat >/dev/null
     if [ ! -f /var/lib/tomcat/webapps/jenkins.war ]; then
         wget http://mirrors.jenkins-ci.org/war/latest/jenkins.war -P /var/lib/tomcat/webapps/
     fi

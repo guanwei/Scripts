@@ -25,11 +25,12 @@ if [ $(id -u) != "0" ] ; then
     exit 1
 fi
 
+SYSTEM=$(uname -r)
+
 if [ -z "$(rpm -qa | grep epel-release)" ]; then
     echo_title "Installing EPEL repo..."
-    SYSTEM=$(uname -r)
     case "$SYSTEM" in
-        *el6*)
+        *el6*|*amzn1*)
             rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm;;
         *el7*)
             rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm;;
@@ -41,7 +42,7 @@ fi
 
 if [ -z "$(rpm -qa | grep pptpd)" ]; then
     echo_title "Installing pptpd..."
-    yum -y install pptpd
+    yum install -y pptpd >/dev/null
     echo_success "pptpd has been installed"
 fi
 

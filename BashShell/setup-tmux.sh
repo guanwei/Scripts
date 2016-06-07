@@ -27,7 +27,7 @@ fi
 
 # install tmux
 echo_title "Installing tmux..."
-yum install -y tmux
+yum install -y tmux >/dev/null
 echo_success "tmux has been installed"
 
 # enable 256 colors

@@ -29,8 +29,8 @@ TIME_ZONE="Asia/Shanghai"
 
 # set timezone
 echo_title "Setting timezone [$TIME_ZONE]..."
-rm -rf /etc/localtime
-ln -sf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime
+rm -rvf /etc/localtime
+ln -svf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime
 echo_success "Timezone has been set to [$TIME_ZONE]"
 
 # disabe selinux
@@ -40,12 +40,13 @@ if [ -e /etc/selinux/config ]; then
 fi
 echo_success "selinux has been disabled"
 
+SYSTEM=$(uname -r)
+
 # install epel repo
 if [ -z "$(rpm -qa | grep epel-release)" ]; then
     echo_title "Installing EPEL repo..."
-    SYSTEM=$(uname -r)
     case "$SYSTEM" in
-        *el6*)
+        *el6*|*amzn1*)
             rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm;;
         *el7*)
             rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm;;
