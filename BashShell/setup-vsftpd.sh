@@ -50,12 +50,18 @@ echo_success "vsftpd has been created"
 
 # set up vsftpd
 echo_title "Setting up vsftpd..."
+SUBJECT="/C=CN/ST=China/L=Shanghai/O=vsftpd/OU=vsftpd/CN=vsftpd"
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj $SUBJECT -keyout /etc/vsftpd/vsftpd.pem -out /etc/vsftpd/vsftpd.pem
+
 sed -i 's/[ #]*anonymous_enable=.*/anonymous_enable=NO/g' /etc/vsftpd/vsftpd.conf
 sed -i 's/[ #]*chroot_local_user=.*/chroot_local_user=YES/g' /etc/vsftpd/vsftpd.conf
-if [ -z "$(grep 'Additional configuration' /etc/vsftpd/vsftpd.conf)" ]; then
+setsebool -P ftp_home_dir 1
+setsebool -P allow_ftpd_full_access 1
+
+if [ -z "$(grep 'Passive Mode configuration' /etc/vsftpd/vsftpd.conf)" ]; then
 cat >> /etc/vsftpd/vsftpd.conf << EOF
 
-# Additional configuration
+# Passive Mode configuration
 pasv_enable=YES
 pasv_min_port=1024
 pasv_max_port=1048
@@ -63,11 +69,27 @@ pasv_address=$PUBLIC_IP
 local_root=$FTP_ROOT
 EOF
 fi
+
+if [ -z "$(grep 'TLS configuration' /etc/vsftpd/vsftpd.conf)" ]; then
+cat >> /etc/vsftpd/vsftpd.conf << EOF
+
+# TLS configuration
+#ssl_enable=YES
+#allow_anon_ssl=NO
+#force_local_data_ssl=YES
+#force_local_logins_ssl=YES
+#ssl_tlsv1=YES
+#ssl_sslv2=NO
+#ssl_sslv3=NO
+#rsa_cert_file=/etc/vsftpd/vsftpd.pem
+#rsa_private_key_file=/etc/vsftpd/vsftpd.pem
+EOF
+fi
 echo_success "vsftpd has been set up"
 
 # enable & start vsftpd service
 chkconfig vsftpd on
-service vsftpd start
+service vsftpd restart
 
 echo ""
 echo_title "set up completed. Following steps need also be done."
