@@ -54,6 +54,7 @@ sed -i 's/[ #]*anonymous_enable=.*/anonymous_enable=NO/g' /etc/vsftpd/vsftpd.con
 sed -i 's/[ #]*chroot_local_user=.*/chroot_local_user=YES/g' /etc/vsftpd/vsftpd.conf
 if [ -z "$(grep 'Additional configuration' /etc/vsftpd/vsftpd.conf)" ]; then
 cat >> /etc/vsftpd/vsftpd.conf << EOF
+
 # Additional configuration
 pasv_enable=YES
 pasv_min_port=1024
