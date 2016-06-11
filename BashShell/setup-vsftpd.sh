@@ -68,15 +68,18 @@ echo_success "vsftpd has been set up"
 chkconfig vsftpd on
 service vsftpd start
 
-cat << EOF
+echo ""
+echo_title "set up completed. Following steps need also be done."
+echo ""
 
+cat << EOF
 ===== create user for vsftpd =====
 sudo adduser <username>
 sudo passwd <username>
 
 ==== open firewall port for vsftpd ====
 <Protocol>  <PortRange>  <Source>
-TCP	           20-21	   0.0.0.0/0
-TCP	         1024-1048	 0.0.0.0/0
+TCP         20-21        0.0.0.0/0
+TCP         1024-1048    0.0.0.0/0
 
 EOF
