@@ -28,7 +28,7 @@ fi
 PUBLIC_IP=$(curl -s ipv4.icanhazip.com)
 
 # read ftp root
-_FTP_ROOT=/var/www/html
+_FTP_ROOT=/var/ftp/pub
 read -p "Please select ftp root [$_FTP_ROOT] " FTP_ROOT
 if [ -z "$FTP_ROOT" ] ; then
     FTP_ROOT=$_FTP_ROOT
