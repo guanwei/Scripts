@@ -103,10 +103,13 @@ echo_success "vsftpd has been set up"
 
 # enable & start vsftpd service
 chkconfig vsftpd on
-service vsftpd start
+service vsftpd restart
+
+echo ""
+echo_title "set up completed. Following steps need also be done."
+echo ""
 
 cat << EOF
-
 ===== create user for vsftpd =====
 sudo echo <username> >> /etc/vsftpd/vuser_passwd.txt
 sudo echo <password> >> /etc/vsftpd/vuser_passwd.txt
@@ -114,7 +117,7 @@ sudo db_load -T -t hash -f /etc/vsftpd/vuser_passwd.txt /etc/vsftpd/vuser_passwd
 
 ==== open firewall port for vsftpd ====
 <Protocol>  <PortRange>  <Source>
-TCP	           20-21	   0.0.0.0/0
-TCP	         1024-1048	 0.0.0.0/0
+TCP         20-21        0.0.0.0/0
+TCP         1024-1048    0.0.0.0/0
 
 EOF
