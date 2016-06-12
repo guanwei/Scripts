@@ -62,6 +62,7 @@ db_load -T -t hash -f /etc/vsftpd/vuser_passwd.txt /etc/vsftpd/vuser_passwd.db
 fi
 
 # update vsftpd pam file
+mv -f /etc/pam.d/vsftpd /etc/pam.d/vsftpd.bak
 cat > /etc/pam.d/vsftpd << EOF
 #%PAM-1.0
 auth       required     pam_userdb.so     db=/etc/vsftpd/vuser_passwd
