@@ -34,11 +34,28 @@ ln -svf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime
 echo_success "Timezone has been set to [$TIME_ZONE]"
 
 # disabe selinux
-echo_title "Disabling selinux..."
-if [ -e /etc/selinux/config ]; then
-    sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config
+if [ -f /etc/selinux/config ]; then
+    echo_title "Disabling selinux..."
+    sed -i '/SELINUX/s/enforcing/disabled/' /etc/selinux/config
+    setenforce 0
+    echo_success "selinux has been disabled"
 fi
-echo_success "selinux has been disabled"
+
+# disable iptables
+if [ rpm -qa | grep -q iptables ]; then
+    echo_title "Disabling iptables..."
+    chkconfig iptables off
+    service iptables stop
+    echo_success "iptables has been disabled"
+fi
+
+# disable firewalld
+if [ rpm -qa | grep -q firewalld ]; then
+    echo_title "Disabling firewalld..."
+    chkconfig firewalld off
+    service firewalld stop
+    echo_success "firewalld has been disabled"
+fi
 
 SYSTEM=$(uname -r)
 
