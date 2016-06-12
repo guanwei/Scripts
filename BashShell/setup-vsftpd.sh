@@ -100,6 +100,7 @@ pasv_address=$PUBLIC_IP
 EOF
 fi
 
+setsebool -P ftp_home_dir=1
 echo_success "vsftpd has been set up"
 
 # enable & start vsftpd service
