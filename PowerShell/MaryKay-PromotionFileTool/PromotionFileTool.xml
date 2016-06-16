@@ -1,0 +1,102 @@
+<PromotionFileTool>
+	<Environments>
+		<Env Name="UAT">
+			<Source Server="qa_server_01" />
+			<Destination>
+				<Group Name="uat-web-servers">
+					<Server>uat_web_server_01</Server>
+					<Server>uat_web_server_02</Server>
+				</Group>
+				<Group Name="uat-iweb-servers">
+					<Server>uat_iweb_server_01</Server>
+				</Group>
+				<Group Name="uat-off-servers">
+					<Server>uat_off_server_01</Server>
+				</Group>
+			</Destination>
+		</Env>
+		<Env Name="Production">
+			<Source Server="uat_server_01" />
+			<Destination>
+                <Group Name="prod-web-servers">
+					<Server>prod_web_server_01</Server>
+					<Server>prod_web_server_02</Server>
+				</Group>
+				<Group Name="prod-iweb-servers">
+					<Server>prod_iweb_server_01</Server>
+				</Group>
+				<Group Name="prod-off-servers">
+					<Server>prod_off_server_01</Server>
+				</Group>
+			</Destination>
+		</Env>
+	</Environments>
+	<PublishFiles>
+		<FileList>
+			<FileItem Name="test1.txt">
+				<Files>
+					<Path>D:\test1.txt</Path>
+					<Path>D:\testfolder\test1.txt</Path>
+				</Files>
+				<Servers Env="UAT">
+					<Group>uat-web-servers</Group>
+					<Group>uat-iweb-servers</Group>
+					<Group>uat-off-servers</Group>
+				</Servers>
+				<Servers Env="Production">
+					<Group>prod-web-servers</Group>
+					<Group>prod-iweb-servers</Group>
+					<Group>prod-off-servers</Group>
+				</Servers>
+			</FileItem>
+			<FileItem Name="test2.txt">
+				<Files>
+					<Path>D:\test2.txt</Path>
+					<Path>D:\testfolder\test2.txt</Path>
+				</Files>
+				<Servers Env="UAT">
+					<Group>uat-web-servers</Group>
+					<Group>uat-iweb-servers</Group>
+				</Servers>
+				<Servers Env="Production">
+					<Group>prod-web-servers</Group>
+					<Group>prod-iweb-servers</Group>
+				</Servers>
+			</FileItem>
+		</FileList>
+	</PublishFiles>
+	<UpdateDate>
+		<FileList>
+			<FileItem Name="datetime.txt">
+				<Files>
+					<Path>D:\datetime.txt</Path>
+					<Path>D:\datetimefolder\datetime.txt</Path>
+				</Files>
+				<DateInfo NodeName="dateinfo">
+					<DateType>promotion_start_date</DateType>
+					<DateType>promotion_end_date</DateType>
+				</DateInfo>
+				<Servers Env="UAT">
+					<Group>uat-web-servers</Group>
+					<Group>uat-iweb-servers</Group>
+					<Group>uat-off-servers</Group>
+				</Servers>
+				<Servers Env="Production">
+					<Group>prod-web-servers</Group>
+					<Group>prod-iweb-servers</Group>
+					<Group>prod-off-servers</Group>
+				</Servers>
+			</FileItem>
+		</FileList>
+	</UpdateDate>
+	<Applications>
+		<App Name="app01" PhysicalPath="D:\website\app01">
+			<Servers Env="UAT" GroupName="uat-web-servers" />
+			<Servers Env="Production" GroupName="prod-web-servers" />
+		</App>
+		<App Name="app02" PhysicalPath="D:\website\app02">
+			<Servers Env="UAT" GroupName="uat-iweb-servers" />
+			<Servers Env="Production" GroupName="prod-iweb-servers" />
+		</App>
+	</Applications>
+</PromotionFileTool>
