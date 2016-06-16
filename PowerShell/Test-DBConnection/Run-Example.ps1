@@ -1,0 +1,1 @@
+.\Test-DBConnection.ps1 -Config Example.config -EnableLog
