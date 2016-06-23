@@ -9,6 +9,5 @@ else
     exit 1
 }
 
-Manage-EnvVars ¨CName ChocolateyInstall -Value D:\chocolatey
+Manage-EnvVars -Name ChocolateyInstall -Value D:\chocolatey
 iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex
-

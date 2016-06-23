@@ -9,9 +9,9 @@ else
     exit 1
 }
 
-$InstallPath = Manage-EnvVars 每Name ChocolateyInstall 每Select
+$InstallPath = Manage-EnvVars -Name ChocolateyInstall -Select
 if($InstallPath -and (Test-Path $InstallPath))
 {
     Remove-Item $InstallPath -Recurse -Force
 }
-Manage-EnvVars 每Name ChocolateyInstall 每Delete
+Manage-EnvVars -Name ChocolateyInstall -Delete
