@@ -9,12 +9,12 @@ pip install aliyun-python-sdk-ram
 
 获得帮助
 ```
-python3 get_user_info.py -h
+python3 get_alicloud_user_info.py -h
 ```
 
 如何运行
 ```
-python3 get_user_info.py --access-key XXXXX --secret-key XXXXXX
+python3 get_alicloud_user_info.py --access-key XXXXX --secret-key XXXXXX
 ```
 
 ### 参考文档
