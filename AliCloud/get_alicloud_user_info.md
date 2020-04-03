@@ -2,7 +2,7 @@
 
 安装alicloud ram python sdk
 ```
-$ pip install aliyun-python-sdk-ram
+$ pip3 install aliyun-python-sdk-ram
 ```
 
 ### 使用方法
